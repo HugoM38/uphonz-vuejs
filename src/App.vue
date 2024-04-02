@@ -1,30 +1,27 @@
-<script setup lang="ts">
-import Home from './components/Home.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div id="app">
+    <header>
+      <!-- Vous pouvez ajouter ici une barre de navigation ou un menu si nécessaire -->
+    </header>
+    <!-- Le composant de la route actuelle sera rendu ici -->
+    <router-view></router-view>
   </div>
-  <Home msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script setup lang="ts">
+// Le script setup est optionnel dans ce cas, car il n'y a pas de logique spécifique
+</script>
+
+<style>
+/* Styles globaux de l'application */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+#app {
+  text-align: center;
 }
 </style>
