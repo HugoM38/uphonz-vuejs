@@ -54,9 +54,6 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import router from '@/router/router';
-import { useAuthStore } from '@/stores/useAuthStore';
-
-const { setUser } = useAuthStore();
 
 const firstname = ref('');
 const lastname = ref('');
@@ -87,33 +84,39 @@ async function signup() {
             break;
     }
     try {
-        const response = await axios.post(endpoint, {
+        const signupResponse = await axios.post(endpoint, {
             firstname: firstname.value,
             lastname: lastname.value,
             email: email.value,
             password: password.value
         });
 
-        console.log(response.data);
+        if (signupResponse.data.acknowledged === true) {
+            const loginEndpoint = endpoint + 'login';
+            const loginResponse = await axios.post(loginEndpoint, {
+                email: email.value,
+                password: password.value,
+            });
 
-        if (response.data.acknowledged === true) {
-            showSnackbar('Inscription réussie! Vous allez maintenant être connecté.', 'success');
-            let userData = { ...response.data.user };
-            userData.role = role.value;
-            setUser(JSON.stringify(userData));
-            router.push("/home");
+            if (loginResponse.data) {
+                let userData = { ...loginResponse.data.user, role: role.value };
+                localStorage.setItem('user', JSON.stringify(userData));
+                showSnackbar('Inscription et connexion réussies!', 'success');
+                router.push("/");
+            } else {
+                throw new Error('Connexion automatique échouée.');
+            }
         } else {
             showSnackbar('Échec de l’inscription!', 'error');
         }
     } catch (error) {
+        let errorMessage = 'Erreur inattendue lors de l’inscription ou de la connexion.';
         if (axios.isAxiosError(error) && error.response) {
-            const errorMessage = error.response.data || 'Erreur inattendue lors de l’inscription.';
-            showSnackbar(errorMessage, 'error');
+            errorMessage = error.response.data.message || errorMessage;
         } else if (error instanceof Error) {
-            showSnackbar(error.message, 'error');
-        } else {
-            showSnackbar('Erreur inattendue!', 'error');
+            errorMessage = error.message;
         }
+        showSnackbar(errorMessage, 'error');
     }
 }
 </script>
