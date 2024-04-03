@@ -52,16 +52,14 @@ router.beforeEach((to, _from, next) => {
   const user = localStorage.getItem("user");
   const userData = user ? JSON.parse(user) : null;
   const isAuthenticated = !!userData;
-  const isLoginPage = to.path === "/";
-  const isSignupPage = to.path === "/signup";
 
 
-  if (isAuthenticated && (isLoginPage || isSignupPage)) {
+  if (isAuthenticated) {
     const homePath = getHomePathForRole(userData.role);
     if (to.path === homePath) {
       return next();
     }
-    if (to.path === '/') {
+    if (to.path === '/' || to.path === '/signup') {
       return next(homePath);
     }
     if (requiresAuth && to.meta.role && userData.role !== to.meta.role) {
