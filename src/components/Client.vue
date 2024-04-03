@@ -72,8 +72,10 @@ async function requete(endpoint: string, request: any) {
     const response = await axios.patch(endpoint, request);
     if (response.data.acknowledged) {
       showSnackbar('Modification appliquée!', 'success');
+      return true
     } else {
       showSnackbar('Échec de la modification!', 'error');
+      return false
     }
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -102,14 +104,22 @@ async function requete(endpoint: string, request: any) {
         const request = {
           "firstname": this.nom
         }
-        requete(endpoint,request)
+        if (await requete(endpoint, request)) {
+          const newUser = JSON.parse(user)
+          newUser.lastname = this.nom
+          localStorage.setItem('user', JSON.stringify(newUser))
+        }
       },
-      validerPrenom() {
-        const endpoint = 'http://localhost:3000/clients/'+email;
+      async validerPrenom() {
+        const endpoint = 'http://localhost:3000/clients/' + email;
         const request = {
           "lastname": this.prenom
         }
-        requete(endpoint,request)
+        if (await requete(endpoint, request)) {
+          const newUser = JSON.parse(user)
+          newUser.lastname = this.prenom
+          localStorage.setItem('user', JSON.stringify(newUser))
+        }
       },
       validerMotDePasse() {
         const endpoint = 'http://localhost:3000/clients/change_password/'+email;

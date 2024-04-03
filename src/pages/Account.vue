@@ -16,7 +16,7 @@
 import Client from '../components/Client.vue';
 import Deliverer from "@/components/Deliverer.vue";
 import Supplier from "@/components/Supplier.vue";
-const isClient = true;
+const isClient = !true;
 const isDeliverer = !true;
-const isSupplier = !true;
+const isSupplier = true;
 </script>
