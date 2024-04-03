@@ -85,7 +85,9 @@ async function login() {
 
     if (response.data.login === 'success') {
       showSnackbar('Connexion réussie!', 'success');
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      let userData = response.data.user;
+      userData.role = role.value;
+      localStorage.setItem('user', JSON.stringify(userData));
       router.push("/home");
     } else {
       showSnackbar('Échec de la connexion!', 'error');
