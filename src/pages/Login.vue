@@ -47,6 +47,9 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import router from '@/router/router';
+import { useAuthStore } from '@/stores/useAuthStore';
+
+const { setUser } = useAuthStore();
 
 const email = ref('');
 const password = ref('');
@@ -87,7 +90,7 @@ async function login() {
       showSnackbar('Connexion réussie!', 'success');
       let userData = {...response.data.client, ...response.data.supplier, ...response.data.deliverer};
       userData.role = role.value;
-      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(JSON.stringify(userData));
       let homePath = '/';
       switch (role.value) {
         case 'supplier':

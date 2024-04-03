@@ -1,15 +1,20 @@
 <template>
-  <div id="app">
-    <header>
-      <!-- Vous pouvez ajouter ici une barre de navigation ou un menu si nécessaire -->
-    </header>
-    <!-- Le composant de la route actuelle sera rendu ici -->
-    <router-view></router-view>
-  </div>
+  <v-app>
+    <div id="app">
+      <header>
+        <Navbar />
+      </header>
+      <v-main>
+        <router-view></router-view>
+      </v-main>
+    </div>
+  </v-app>
+
 </template>
 
 <script setup lang="ts">
-// Le script setup est optionnel dans ce cas, car il n'y a pas de logique spécifique
+import Navbar from './components/Navbar.vue';
+
 </script>
 
 <style>
