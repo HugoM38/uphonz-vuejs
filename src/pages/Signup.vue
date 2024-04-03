@@ -54,6 +54,9 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import router from '@/router/router';
+import { useAuthStore } from '@/stores/useAuthStore';
+
+const { setUser } = useAuthStore();
 
 const firstname = ref('');
 const lastname = ref('');
@@ -97,7 +100,7 @@ async function signup() {
             showSnackbar('Inscription réussie! Vous allez maintenant être connecté.', 'success');
             let userData = { ...response.data.user };
             userData.role = role.value;
-            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(JSON.stringify(userData));
             router.push("/home");
         } else {
             showSnackbar('Échec de l’inscription!', 'error');
