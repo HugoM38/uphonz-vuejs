@@ -16,7 +16,12 @@
 import Client from '../components/Client.vue';
 import Deliverer from "@/components/Deliverer.vue";
 import Supplier from "@/components/Supplier.vue";
-const isClient = !true;
-const isDeliverer = !true;
-const isSupplier = true;
+const user = localStorage.getItem('user') ?? "";
+let role = "";
+if (user !== "") {
+  role = JSON.parse(user).role;
+}
+const isClient = role === "client";
+const isDeliverer = role === "deliverer";
+const isSupplier = role === "supplier";
 </script>
