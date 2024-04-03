@@ -1,31 +1,22 @@
 <template>
   <div>
-    <p>Test de merde</p>
-    <!-- Condition pour afficher le composant Client ou Deliverer -->
     <div v-if="isClient">
       <Client/>
     </div>
-    <div v-else-if="isDeliverer">
+    <div v-if="isDeliverer">
       <Deliverer/>
+    </div>
+    <div v-if="isSupplier">
+      <Supplier/>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import Client from '../components/Client.vue';
-import Deliverer from '../components/Deliverer.vue'; // Assurez-vous que le chemin est correct
-
-export default defineComponent({
-  data() {
-    return {
-      isClient: true,
-      isDeliverer: false
-    };
-  },
-  components: {
-    Client,
-    Deliverer
-  }
-});
+import Deliverer from "@/components/Deliverer.vue";
+import Supplier from "@/components/Supplier.vue";
+const isClient = true;
+const isDeliverer = !true;
+const isSupplier = !true;
 </script>
