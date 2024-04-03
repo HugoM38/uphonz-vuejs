@@ -7,7 +7,7 @@
         <v-spacer></v-spacer>
 
         <template v-if="isUserLoggedIn()">
-            <v-btn text="true" @click="goto('profile')">Profil</v-btn>
+            <v-btn text="true" @click="goto('Account')">Profil</v-btn>
             <v-btn text="true" @click="goto('history')">Historique</v-btn>
             <v-btn text="true" @click="logout">Déconnexion</v-btn>
         </template>
