@@ -1,6 +1,9 @@
-import Home from "@/components/Home.vue";
-import Login from "@/pages/Login.vue";
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import Home from '@/pages/Home.vue';
+import Login from '@/pages/Login.vue';
+import ClientHome from '@/pages/ClientHome.vue';
+import SupplierHome from '@/pages/SupplierHome.vue';
+import DeliveryHome from '@/pages/DeliveryHome.vue';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -12,8 +15,26 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/",
-    name: "Login",
+    path: '/client-home',
+    name: 'ClientHome',
+    component: ClientHome,
+    //meta: { requiresAuth: true, role: 'client' },
+  },
+  {
+    path: '/supplier-home',
+    name: 'SupplierHome',
+    component: SupplierHome,
+    //meta: { requiresAuth: true, role: 'supplier' },
+  },
+  {
+    path: '/delivery-home',
+    name: 'DeliveryHome',
+    component: DeliveryHome,
+    //meta: { requiresAuth: true, role: 'delivery' },
+  },
+  {
+    path: '/',
+    name: 'Login',
     component: Login,
   },
 ];
