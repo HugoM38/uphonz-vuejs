@@ -88,7 +88,19 @@ async function login() {
       let userData = {...response.data.user};
       userData.role = role.value;
       localStorage.setItem('user', JSON.stringify(userData));
-      router.push("/home");
+      let homePath = '/';
+      switch (role.value) {
+        case 'supplier':
+          homePath = '/supplier-home';
+          break;
+        case 'client':
+          homePath = '/client-home';
+          break;
+        case 'deliverer':
+          homePath = '/delivery-home';
+          break;
+      }
+      router.push(homePath);
     } else {
       showSnackbar('Échec de la connexion!', 'error');
     }
