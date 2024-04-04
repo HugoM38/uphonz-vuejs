@@ -18,7 +18,7 @@
 
               <!-- Email Field -->
               <v-text-field label="Adresse Email" prepend-icon="mdi-email" type="email" v-model="email"
-                :rules="[(v: string) => !!v || 'L’e-mail est requis']" required></v-text-field>
+                :rules="emailRules" required></v-text-field>
 
               <!-- Password Field -->
               <v-text-field label="Mot de passe" prepend-icon="mdi-lock" type="password" v-model="password"
@@ -84,15 +84,23 @@ const typeOfVehicle = ref('');
 const snackbar = ref({ show: false, message: '', color: 'success' });
 const isElevated = ref(false);
 
+const emailRules = [
+  (v: string) => !!v || 'L’e-mail est requis',
+  (v: string) => /.+@.+\..+/.test(v) || 'Le format de l’e-mail est invalide',
+];
+
+const isValidEmail = (email: string) => /.+@.+\..+/.test(email);
+
 const isFormInvalid = computed(() => {
+  const isBaseFieldsInvalid = firstname.value.trim() === '' || lastname.value.trim() === '' ||
+    email.value.trim() === '' || !isValidEmail(email.value) || password.value.trim() === '';
   if (role.value === 'deliverer') {
-    return firstname.value.trim() === '' || lastname.value.trim() === '' ||
-      email.value.trim() === '' || password.value.trim() === '' ||
+    return isBaseFieldsInvalid ||
       base.value.trim() === '' || typeOfVehicle.value.trim() === '';
   }
-  return firstname.value.trim() === '' || lastname.value.trim() === '' ||
-    email.value.trim() === '' || password.value.trim() === '' || role.value === '';
+  return isBaseFieldsInvalid || role.value === '';
 });
+
 
 function goToLogin() {
   router.push('/');
