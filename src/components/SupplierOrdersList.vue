@@ -45,8 +45,19 @@ export default {
   },
   methods: {
     deleteOrder(orderId) {
-      // Implémentez la logique pour supprimer une commande
-      console.log('Deleting order with ID:', orderId);
+      try {
+        axios.patch(`http://localhost:3000/suppliers/delete_history/${orderId}`);
+        this.orders = this.orders.filter(order => order.id !== orderId);
+        this.showSnackbar('Commande supprimée avec succès', 'success');
+      } catch (error) {
+        let errorMessage = "Erreur inattendue lors de la suppression de la commande";
+        if (axios.isAxiosError(error) && error.response) {
+          errorMessage = error.response.data.message || errorMessage;
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+        this.showSnackbar(errorMessage, 'error');
+      }
     },
     showSnackbar(message, type) {
       this.snackbar.show = true;
@@ -99,10 +110,7 @@ export default {
     if (user && user._id) {
       this.fetchOrderHistory(user._id);
     } else {
-      console.error('ID du fournisseur introuvable.');
-      this.snackbarText = 'ID du fournisseur introuvable. Impossible de récupérer l\'historique des commandes.';
-      this.snackbarColor = 'error';
-      this.snackbar = true;
+      this.showSnackbar('Utilisateur non authentifié', 'error');
     }
   },
 };
