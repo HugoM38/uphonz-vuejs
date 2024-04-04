@@ -13,9 +13,9 @@
 </template>
 
 <script setup lang="ts">
-import Client from '../components/Client.vue';
-import Deliverer from "@/components/Deliverer.vue";
-import Supplier from "@/components/Supplier.vue";
+import Client from '../components/AccountClient.vue';
+import Deliverer from "@/components/AccountDeliverer.vue";
+import Supplier from "@/components/AccountSupplier.vue";
 const user = localStorage.getItem('user') ?? "";
 let role = "";
 if (user !== "") {
