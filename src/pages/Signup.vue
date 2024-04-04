@@ -34,6 +34,15 @@
                 <v-btn :disabled="isFormInvalid" color="success" class="mr-4" type="submit" block>
                   S'inscrire
                 </v-btn>
+
+                <!-- Login Button -->
+                <v-btn color="pink accent-3" dark depressed large @click="goToLogin"
+                class="mt-5" :class="{ 'v-btn--is-elevated': isElevated }"
+                @mouseover="isElevated = true" @mouseleave="isElevated = false"
+                block>
+                <v-icon left>mdi-account-plus</v-icon>
+                Se connecter
+              </v-btn>
               </v-form>
             </v-card-text>
           </v-card>
@@ -61,11 +70,16 @@ const email = ref('');
 const password = ref('');
 const role = ref('');
 const snackbar = ref({ show: false, message: '', color: 'success' });
+const isElevated = ref(false);
 
 const isFormInvalid = computed(() => {
     return firstname.value.trim() === '' || lastname.value.trim() === '' ||
         email.value.trim() === '' || password.value.trim() === '' || role.value === '';
 });
+
+function goToLogin() {
+  router.push('/');
+}
 
 function showSnackbar(message: string, type: 'success' | 'error') {
     snackbar.value.show = true;
@@ -92,20 +106,8 @@ async function signup() {
         });
 
         if (signupResponse.data.acknowledged === true) {
-            const loginEndpoint = endpoint + 'login';
-            const loginResponse = await axios.post(loginEndpoint, {
-                email: email.value,
-                password: password.value,
-            });
-
-            if (loginResponse.data) {
-                let userData = { ...loginResponse.data.user, role: role.value };
-                localStorage.setItem('user', JSON.stringify(userData));
-                showSnackbar('Inscription et connexion réussies!', 'success');
-                router.push("/");
-            } else {
-                throw new Error('Connexion automatique échouée.');
-            }
+            showSnackbar('Inscription réussie! Veuillez vous connecter.', 'success');
+            router.push("/");
         } else {
             showSnackbar('Échec de l’inscription!', 'error');
         }

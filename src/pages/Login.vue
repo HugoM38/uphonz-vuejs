@@ -27,6 +27,15 @@
               <v-btn :disabled="isFormInvalid" color="success" class="mr-4" type="submit" block>
                 Connexion
               </v-btn>
+              
+              <!-- Signup Button -->
+              <v-btn color="pink accent-3" dark depressed large @click="goToSignup"
+                class="mt-5" :class="{ 'v-btn--is-elevated': isElevated }"
+                @mouseover="isElevated = true" @mouseleave="isElevated = false"
+                block>
+                <v-icon left>mdi-account-plus</v-icon>
+                Inscription
+              </v-btn>
             </v-form>
           </v-card-text>
         </v-card>
@@ -55,10 +64,15 @@ const email = ref('');
 const password = ref('');
 const role = ref('');
 const snackbar = ref({ show: false, message: '', color: 'success' });
+const isElevated = ref(false);
 
 const isFormInvalid = computed(() => {
   return email.value.trim() === '' || password.value.trim() === '' || role.value === '';
 });
+
+function goToSignup() {
+  router.push('/signup');
+}
 
 function showSnackbar(message: string, type: 'success' | 'error') {
   snackbar.value.show = true;
@@ -122,5 +136,4 @@ async function login() {
 
 
 <style scoped>
-/* Les styles spécifiques à Vuetify sont généralement inutiles ici, car Vuetify s'occupe déjà de la plupart des aspects de l'UI. */
 </style>
