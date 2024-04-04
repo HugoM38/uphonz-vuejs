@@ -1,21 +1,22 @@
-import { ref } from 'vue';
+import { defineStore } from 'pinia';
 
-const user = ref(localStorage.getItem('user') ? true : false);
-
-export function useAuthStore() {
-  const setUser = (userData: string | null) => {
-    if (userData) {
-      localStorage.setItem('user', userData);
-      user.value = true;
-    } else {
-      localStorage.removeItem('user');
-      user.value = false;
-    }
-  };
-
-  const isUserLoggedIn = () => {
-    return user.value;
-  };
-
-  return { setUser, isUserLoggedIn };
-}
+export const useAuthStore = defineStore({
+  id: 'auth', 
+  state: () => ({
+    user: localStorage.getItem('user') ? true : false,
+  }),
+  actions: {
+    setUser(userData) {
+      if (userData) {
+        localStorage.setItem('user', userData);
+        this.user = true;
+      } else {
+        localStorage.removeItem('user');
+        this.user = false;
+      }
+    },
+    isUserLoggedIn() {
+      return this.user;
+    },
+  },
+});
