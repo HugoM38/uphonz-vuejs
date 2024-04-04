@@ -8,7 +8,7 @@
 
         <template v-if="isUserLoggedIn()">
             <v-btn text="true" @click="goto('Account')">Profil</v-btn>
-            <v-btn text="true" @click="goto('history')">Historique</v-btn>
+            <v-btn text="true"  v-if="userRole() === 'deliverer'" @click="goto('DelivererHistory')">Historique</v-btn>
             <v-btn text="true" @click="logout">Déconnexion</v-btn>
         </template>
     </v-app-bar>
@@ -27,6 +27,10 @@ const goto = (path: string) => {
 const logout = () => {
     setUser(null);
     router.push("/");
+};
+
+const userRole = () => {
+    return isUserLoggedIn() ? JSON.parse(localStorage.getItem("user")).role : '';
 };
 
 </script>
