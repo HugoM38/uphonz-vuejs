@@ -4,6 +4,7 @@ import Login from '@/pages/Login.vue';
 import ClientHome from '@/pages/ClientHome.vue';
 import SupplierHome from '@/pages/SupplierHome.vue';
 import DeliveryHome from '@/pages/DeliveryHome.vue';
+import DelivererHistory from '@/pages/DelivererHistory.vue';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
@@ -29,6 +30,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'DeliveryHome',
     component: DeliveryHome,
     meta: { requiresAuth: true, role: 'delivery' },
+  },
+  {
+    path: '/deliverer-history',
+    name: 'DelivererHistory',
+    component: DelivererHistory,
+    meta: { requiresAuth: true },
   },
   {
     path: '/',
