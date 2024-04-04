@@ -9,12 +9,15 @@
           <v-col cols="3" class="text-center">Actions</v-col>
         </v-row>
       </v-card>
-      <pending-order-row v-for="order in orders" :key="order.id" :order="order" @acceptOrder="acceptOrder"></pending-order-row>
+      <pending-order-row v-for="order in orders" :key="order.id" :order="order"
+        @acceptOrder="acceptOrder"></pending-order-row>
     </v-container>
-    <v-snackbar v-model="snackbar" :color="snackbarColor">
-      {{ snackbarText }}
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{ snackbar.message }}
       <template v-slot:action="{ attrs }">
-        <v-btn color="white" text v-bind="attrs" @click="snackbar = false">Fermer</v-btn>
+        <v-btn icon @click="snackbar.show = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </template>
     </v-snackbar>
   </div>
@@ -32,13 +35,20 @@ export default {
   data() {
     return {
       orders: [],
-      snackbar: false,
-      snackbarText: '',
-      snackbarColor: '',
+      snackbar: {
+        show: false,
+        message: '',
+        color: 'success'
+      },
       delivererId: '',
     };
   },
   methods: {
+    showSnackbar(message, type) {
+      this.snackbar.show = true;
+      this.snackbar.message = message;
+      this.snackbar.color = type === 'error' ? 'error' : 'success';
+    },
     async fetchPendingOrders() {
       try {
         const response = await axios.get('http://localhost:3000/deliverers/pending_orders');
@@ -53,12 +63,10 @@ export default {
             const responseSupplier = await axios.get(`http://localhost:3000/suppliers/by_id/${basicOrderInfo.supplierId}`);
             return {
               ...basicOrderInfo,
-              clientName: responseClient.data.firstname+' '+responseClient.data.lastname,
-              supplierName: responseSupplier.data.firstname+' '+responseSupplier.data.lastname
+              clientName: responseClient.data.firstname + ' ' + responseClient.data.lastname,
+              supplierName: responseSupplier.data.firstname + ' ' + responseSupplier.data.lastname
             };
           } catch (error) {
-            console.error(`Erreur lors de la récupération des infos du client ${basicOrderInfo.clientId}:`, error);
-            console.error(`Erreur lors de la récupération des infos du fournisseur ${basicOrderInfo.supplierId}:`, error);
             return {
               ...basicOrderInfo,
               clientName: 'Inconnu',
@@ -68,14 +76,15 @@ export default {
         }));
 
         this.orders = ordersWithClients;
-        this.snackbarText = 'Commandes en attente récupérées avec succès';
-        this.snackbarColor = 'success';
-        this.snackbar = true;
+        this.showSnackbar('Commandes en attente récupérées avec succès', 'success');
       } catch (error) {
-        console.error("Erreur lors de la récupération des commandes en attente :", error);
-        this.snackbarText = 'Échec de la récupération des commandes en attente';
-        this.snackbarColor = 'error';
-        this.snackbar = true;
+        let errorMessage = "Erreur inattendue lors de la récupération des commandes";
+        if (axios.isAxiosError(error) && error.response) {
+          errorMessage = error.response.data.message || errorMessage;
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+        this.showSnackbar(errorMessage, 'error');
       }
     },
     async acceptOrder(orderId) {
@@ -83,15 +92,16 @@ export default {
         await axios.patch(`http://localhost:3000/deliverers/take_order/${orderId}`, {
           delivererId: this.delivererId
         });
-        this.snackbarText = `Commande ${orderId} acceptée avec succès`;
-        this.snackbarColor = 'success';
-        this.snackbar = true;
+        this.showSnackbar(`Commande ${orderId} acceptée avec succès`, 'success');
         this.fetchPendingOrders();
       } catch (error) {
-        console.error("Erreur lors de l'acceptation de la commande :", error);
-        this.snackbarText = `Échec de l'acceptation de la commande ${orderId}`;
-        this.snackbarColor = 'error';
-        this.snackbar = true;
+        let errorMessage = `Échec de l'acceptation de la commande ${orderId}`;
+        if (axios.isAxiosError(error) && error.response) {
+          errorMessage = error.response.data.message || errorMessage;
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+        this.showSnackbar(errorMessage, 'error');
       }
     },
   },
