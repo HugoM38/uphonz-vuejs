@@ -1,6 +1,6 @@
 <template>
     <v-card class="mb-2" @click="toggleDetails" elevation="2">
-        <v-row class="order-row" no-gutters>
+        <v-row class="pending-order-row" no-gutters>
             <v-col cols="6">
                 {{ order.id }}
             </v-col>
@@ -26,7 +26,7 @@
 </template>
 
 
-<script>
+<script lang="ts">
 export default {
     props: ['order'],
     data() {

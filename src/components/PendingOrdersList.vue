@@ -9,7 +9,7 @@
           <v-col cols="3" class="text-center">Actions</v-col>
         </v-row>
       </v-card>
-      <order-row v-for="order in orders" :key="order.id" :order="order" @acceptOrder="acceptOrder"></order-row>
+      <pending-order-row v-for="order in orders" :key="order.id" :order="order" @acceptOrder="acceptOrder"></pending-order-row>
     </v-container>
     <v-snackbar v-model="snackbar" :color="snackbarColor">
       {{ snackbarText }}
@@ -22,12 +22,12 @@
 
 <script lang="ts">
 import axios from 'axios';
-import OrderRow from './OrderRow.vue';
+import PendingOrderRow from './PendingOrderRow.vue';
 
 export default {
   name: 'PendingOrdersList',
   components: {
-    OrderRow
+    PendingOrderRow
   },
   data() {
     return {
