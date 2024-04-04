@@ -5,17 +5,17 @@
           <v-switch v-model="locationEnabled" label="Activer la localisation"></v-switch>
         </v-col>
       </v-row>
-      <OrdersList />
+      <PendingOrdersList />
     </v-container>
   </template>
   
   <script lang="ts">
   import { defineComponent, ref, watch, onMounted, onUnmounted } from 'vue';
-  import OrdersList from '@/components/OrdersList.vue';
+  import PendingOrdersList from '@/components/PendingOrdersList.vue';
   
   export default defineComponent({
     components: {
-      OrdersList,
+        PendingOrdersList,
     },
     setup() {
       const locationEnabled = ref(false);

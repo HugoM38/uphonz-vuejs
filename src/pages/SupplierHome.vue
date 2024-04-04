@@ -2,7 +2,7 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <ClientList />
+          <SupplierOrdersList />
         </v-col>
       </v-row>
     </v-container>
@@ -10,12 +10,12 @@
   
   <script lang="ts">
   import { defineComponent } from 'vue';
-  import ClientList from '@/components/ClientsList.vue';
+  import SupplierOrdersList from '@/components/SupplierOrdersList.vue';
   
   export default defineComponent({
     name: 'SupplierHome',
     components: {
-      ClientList,
+        SupplierOrdersList,
     },
   });
   </script>

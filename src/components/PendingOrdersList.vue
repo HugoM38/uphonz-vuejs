@@ -24,7 +24,7 @@
   import axios from 'axios';
   
   export default {
-    name: 'OrdersList',
+    name: 'PendingOrdersList',
     data() {
       return {
         orders: [],

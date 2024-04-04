@@ -41,7 +41,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Signup,
   },
   {
-    path: '/:catchAll(.*)', // Utilisation de ":catchAll(.*)" pour capturer toutes les URL
+    path: '/:catchAll(.*)',
     redirect: '/',
   },
 ];
