@@ -77,12 +77,20 @@ export default {
 
           try {
             const responseClient = await axios.get(`http://localhost:3000/clients/by_id/${basicOrderInfo.clientId}`);
-            const responseDeliverer = await axios.get(`http://localhost:3000/deliverers/by_id/${basicOrderInfo.delivererId}`);
+            if (basicOrderInfo.status !== "pending") {
+              const responseDeliverer = await axios.get(`http://localhost:3000/deliverers/by_id/${basicOrderInfo.delivererId}`);
+              this.showSnackbar('Historique des commandes récupéré avec succès', 'success');
+              return {
+                ...basicOrderInfo,
+                clientName: responseClient.data.firstname + ' ' + responseClient.data.lastname,
+                delivererName: responseDeliverer.data.firstname + ' ' + responseDeliverer.data.lastname
+              };
+            }
             this.showSnackbar('Historique des commandes récupéré avec succès', 'success');
             return {
               ...basicOrderInfo,
               clientName: responseClient.data.firstname + ' ' + responseClient.data.lastname,
-              delivererName: responseDeliverer.data.firstname + ' ' + responseDeliverer.data.lastname
+              delivererName: 'En attente'
             };
           } catch (error) {
             return {

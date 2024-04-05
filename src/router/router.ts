@@ -71,12 +71,12 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  const userData = useAuthStore().getUser;
 
   const isAuthenticated = useAuthStore().isUserLoggedIn;
 
 
   if (isAuthenticated) {
+    const userData = JSON.parse(localStorage.getItem("user")!);
     const homePath = getHomePathForRole(userData.role);
     if (to.path === homePath) {
       return next();
@@ -96,7 +96,6 @@ router.beforeEach((to, _from, next) => {
 });
 
 function getHomePathForRole(role: string) {
-  console.log("role :", role);
   switch (role) {
     case "supplier":
       return "/supplier-home";

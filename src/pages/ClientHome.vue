@@ -1,6 +1,6 @@
 <template>
     <v-container>
-      <SuppliersList @order="order" />
+      <SuppliersList/>
     </v-container>
   </template>
   
@@ -11,13 +11,6 @@
   export default defineComponent({
     components: {
       SuppliersList,
-    },
-    setup() {
-      const order = (supplierId: string) => {
-        console.log(`Commande passée auprès du fournisseur ${supplierId}`);
-      };
-  
-      return { order };
     },
   });
   </script>  
