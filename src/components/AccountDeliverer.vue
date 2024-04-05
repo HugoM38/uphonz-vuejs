@@ -95,7 +95,6 @@ if (user !== ""){
   locomotion = JSON.parse(user).typeOfVehicle
   base = JSON.parse(user).base
   localisable = JSON.parse(user).localisable
-  console.log(JSON.parse(user))
 }
 
 const snackbar = ref({ show: false, message: '', color: 'success' });
@@ -193,8 +192,6 @@ export default defineComponent({
     },
     async modifierLocalisation() {
       const endpoint = 'http://localhost:3000/deliverers/'+email;
-      console.log(JSON.parse(user).localisable)
-      console.log(this.localisable)
       const request = {
         "localisable": this.localisable
       }

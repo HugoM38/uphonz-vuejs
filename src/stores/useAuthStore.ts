@@ -6,7 +6,7 @@ export const useAuthStore = defineStore({
     user: localStorage.getItem('user') ? true : false,
   }),
   actions: {
-    setUser(userData) {
+    setUser(userData: any) {
       if (userData) {
         localStorage.setItem('user', userData);
         this.user = true;

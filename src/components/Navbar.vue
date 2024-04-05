@@ -7,9 +7,9 @@
         <v-spacer></v-spacer>
 
         <template v-if="isUserLoggedIn()">
-            <v-btn text="true" @click="goto('Account')">Profil</v-btn>
-            <v-btn text="true"  v-if="userRole() === 'deliverer'" @click="goto('DelivererHistory')">Historique</v-btn>
-            <v-btn text="true" @click="logout">Déconnexion</v-btn>
+          <v-btn text="true" @click="gotoArgument('Account',role)">Profil</v-btn>
+          <v-btn text="true"  v-if="userRole() === 'deliverer'" @click="goto('DelivererHistory')">Historique</v-btn>
+          <v-btn text="true" @click="logout">Déconnexion</v-btn>
         </template>
     </v-app-bar>
 </template>
@@ -20,8 +20,18 @@ import { useAuthStore } from '@/stores/useAuthStore';
 
 const { isUserLoggedIn, setUser } = useAuthStore();
 
+let role =''
+if(useAuthStore().isUserLoggedIn()){
+  const user: string = localStorage.getItem('user') ?? ''
+  role = JSON.parse(user).role
+}
+
 const goto = (path: string) => {
     router.push({ name: path });
+};
+
+const gotoArgument = (path: string, role: string) => {
+  router.push({ name: path, params:{role: role} });
 };
 
 const logout = () => {
@@ -30,7 +40,7 @@ const logout = () => {
 };
 
 const userRole = () => {
-    return isUserLoggedIn() ? JSON.parse(localStorage.getItem("user")).role : '';
+    return isUserLoggedIn() ? JSON.parse(localStorage.getItem("user") ?? "").role : '';
 };
 
 </script>

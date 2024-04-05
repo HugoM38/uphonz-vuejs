@@ -9,9 +9,21 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/account',
+    path: '/account/:role',
     name: 'Account',
-    component: Account
+    component: Account,
+    beforeEnter: (to, _from, next) => {
+      const allowedRoles = ['client', 'supplier', 'deliverer'];
+      const role = to.params.role;
+
+      // Vérifier si le rôle est autorisé
+      if (allowedRoles.includes(<string>role)) {
+        next();
+      } else {
+        // Rediriger vers une page appropriée si le rôle n'est pas autorisé
+        next({ name: 'Login' }); // Ou toute autre redirection que vous préférez
+      }
+    }
   },
   {
     path: '/client-home',

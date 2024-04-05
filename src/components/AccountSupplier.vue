@@ -59,7 +59,6 @@ if (user !== ""){
   nom = JSON.parse(user).firstname
   prenom = JSON.parse(user).lastname
   email = JSON.parse(user).email
-  console.log(JSON.parse(user)._id)
 }
 const snackbar = ref({ show: false, message: '', color: 'success' });
 
