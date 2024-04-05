@@ -48,15 +48,16 @@
   </v-container>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import {onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 let user = null;
 let email = ""
-const nom = ref<String>("")
-const prenom = ref<String>("")
+const nom = ref("")
+const prenom = ref("")
+const password = ref("")
 const snackbar = ref({ show: false, message: '', color: 'success' });
 
 function showSnackbar(message: string, type: 'success' | 'error') {
@@ -85,47 +86,47 @@ async function requete(endpoint: string, request: any) {
     }
   }
 }
-export default defineComponent({
+
   // Propriétés du composant
-  methods: {
-    async validerNom() {
-      const endpoint = 'http://localhost:3000/clients/' + email;
-      const request = {
-        "lastname": this.nom.value
-      }
-      if (await requete(endpoint, request)) {
-        const newUser = user!
-        newUser.lastname = this.nom.value
-        useAuthStore().setUser(JSON.stringify(newUser))
-      }
-    },
-    async validerPrenom() {
-      const endpoint = 'http://localhost:3000/clients/' + email;
-      const request = {
-        "firstname": this.prenom.value
-      }
-      if (await requete(endpoint, request)) {
-        const newUser = user!
-        newUser.lastname = this.prenom.value
-        useAuthStore().setUser(JSON.stringify(newUser))
-      }
-    },
-    validerMotDePasse() {
-      const endpoint = 'http://localhost:3000/clients/change_password/' + email;
-      const request = {
-        "password": this.password
-      }
-      requete(endpoint, request)
-    },
-  },
-  mounted() {
-    const store = useAuthStore();
-    user = store.getUser();
-    if (user) {
-      nom.value = user.lastname
-      prenom.value = user.firstname
-      email = user.email
-    }
-  },
-});
+
+async function validerNom() {
+  const endpoint = 'http://localhost:3000/clients/' + email;
+  const request = {
+    "lastname": nom.value
+  }
+  if (await requete(endpoint, request)) {
+    const newUser = user!
+    newUser.lastname = nom.value
+    useAuthStore().setUser(JSON.stringify(newUser))
+  }
+}
+async function validerPrenom() {
+  const endpoint = 'http://localhost:3000/clients/' + email;
+  const request = {
+    "firstname": prenom.value
+  }
+  if (await requete(endpoint, request)) {
+    const newUser = user!
+    newUser.firstname = prenom.value
+    useAuthStore().setUser(JSON.stringify(newUser))
+  }
+}
+function validerMotDePasse() {
+  const endpoint = 'http://localhost:3000/clients/change_password/' + email;
+  const request = {
+    "password": password.value
+  }
+  requete(endpoint, request)
+}
+
+onMounted( () => {
+  const store = useAuthStore();
+  user = store.getUser;
+  if (user) {
+    nom.value = user.lastname
+    prenom.value = user.firstname
+    email = user.email
+  }
+})
+
 </script>

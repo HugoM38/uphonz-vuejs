@@ -90,6 +90,9 @@ const locomotion = ref("");
 const localisable = ref(false);
 const snackbar = ref({ show: false, message: '', color: 'success' });
 
+let email = ""
+let user = null;
+
 function showSnackbar(message: string, type: 'success' | 'error') {
   snackbar.value.show = true;
   snackbar.value.message = message;
@@ -119,31 +122,31 @@ async function requete(endpoint: string, request: any) {
 }
 
 async function validerNom() {
-  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const endpoint = 'http://localhost:3000/deliverers/'+ email;
   const request = {
     "lastname": nom.value
   }
   if(await requete(endpoint, request)){
-    const newUser = useAuthStore().getUser;
-    newUser.firstname = nom.value;
-    useAuthStore().setUser(newUser);
+    const newUser = user!;
+    newUser.lastname = nom.value;
+    useAuthStore().setUser(JSON.stringify(newUser));
   }
 }
 
 async function validerPrenom() {
-  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const endpoint = 'http://localhost:3000/deliverers/'+email;
   const request = {
     "firstname": prenom.value
   }
   if (await requete(endpoint, request)) {
-    const newUser = useAuthStore().getUser;
-    newUser.lastname = prenom.value;
-    useAuthStore().setUser(newUser);
+    const newUser = user!;
+    newUser.firstname = prenom.value;
+    useAuthStore().setUser(JSON.stringify(newUser));
   }
 }
 
 async function validerMotDePasse() {
-  const endpoint = 'http://localhost:3000/deliverers/change_password/'+useAuthStore().getUser.email;
+  const endpoint = 'http://localhost:3000/deliverers/change_password/'+email;
   const request = {
     "password": password.value
   }
@@ -151,49 +154,50 @@ async function validerMotDePasse() {
 }
 
 async function validerVille() {
-  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const endpoint = 'http://localhost:3000/deliverers/'+email;
   const request = {
     "base": base.value
   }
   if (await requete(endpoint, request)) {
-    const newUser = useAuthStore().getUser;
+    const newUser = user!;
     newUser.base = base.value;
-    useAuthStore().setUser(newUser);
+    useAuthStore().setUser(JSON.stringify(newUser));
   }
 }
 
 async function validerLocomotion() {
-  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const endpoint = 'http://localhost:3000/deliverers/'+email;
   const request = {
     "typeOfVehicle": locomotion.value
   }
   if (await requete(endpoint, request)) {
-    const newUser = useAuthStore().getUser;
+    const newUser = user!;
     newUser.typeOfVehicle = locomotion.value;
-    useAuthStore().setUser(newUser);
+    useAuthStore().setUser(JSON.stringify(newUser));
   }
 }
 
 async function modifierLocalisation() {
-  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const endpoint = 'http://localhost:3000/deliverers/'+email;
   const request = {
     "localisable": localisable.value
   }
   if (await requete(endpoint, request)) {
-    const newUser = useAuthStore().getUser;
+    const newUser = user!;
     newUser.localisable = localisable.value;
-    useAuthStore().setUser(newUser);
+    useAuthStore().setUser(JSON.stringify(newUser));
   }
 }
 
 onMounted(() => {
-  const user = useAuthStore().getUser;
+  user = useAuthStore().getUser;
   if (user) {
     nom.value = user.lastname;
     prenom.value = user.firstname;
     base.value = user.base;
     locomotion.value = user.typeOfVehicle;
     localisable.value = user.localisable;
+    email = user.email
   }
 });
 
