@@ -15,11 +15,15 @@ import Client from '../components/AccountClient.vue';
 import Deliverer from "@/components/AccountDeliverer.vue";
 import Supplier from "@/components/AccountSupplier.vue";
 import { useRouter } from 'vue-router';
-import {useAuthStore} from "@/stores/useAuthStore.ts";
+import { useAuthStore } from "@/stores/useAuthStore.ts";
 
 const router = useRouter();
-const userRole = useAuthStore().isUserLoggedIn() ? JSON.parse(localStorage.getItem("user") ?? "").role : '';
-const userType = ref(userRole);
+const user = useAuthStore().getUser;
+let role = "";
+if (user) {
+  role = user.role;
+}
+const userType = ref(role);
 const userTypeParam = computed(() => router.currentRoute.value.params.role);
 
 const isUserAllowed = computed(() => {
@@ -39,11 +43,10 @@ const currentComponent = computed(() => {
   }
 });
 
-// Observer les changements dans le paramètre de l'URL
 watch(userTypeParam, (newRole) => {
   if (newRole !== userType.value) {
-    // Rediriger vers la page du compte avec le bon rôle
     router.push({ name: 'Account', params: { role: userType.value } });
   }
 });
+
 </script>

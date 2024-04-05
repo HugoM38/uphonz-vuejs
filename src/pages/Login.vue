@@ -58,8 +58,6 @@ import axios from 'axios';
 import router from '@/router/router';
 import { useAuthStore } from '@/stores/useAuthStore';
 
-const { setUser } = useAuthStore();
-
 const email = ref('');
 const password = ref('');
 const role = ref('');
@@ -104,7 +102,7 @@ async function login() {
       showSnackbar('Connexion réussie!', 'success');
       let userData = {...response.data.client, ...response.data.supplier, ...response.data.deliverer};
       userData.role = role.value;
-      setUser(JSON.stringify(userData));
+      useAuthStore().setUser(JSON.stringify(userData));
       let homePath = '/';
       switch (role.value) {
         case 'supplier':
@@ -117,7 +115,8 @@ async function login() {
           homePath = '/delivery-home';
           break;
       }
-      router.push(homePath);
+      location.reload();
+      await router.push(homePath);
     } else {
       showSnackbar('Échec de la connexion!', 'error');
     }

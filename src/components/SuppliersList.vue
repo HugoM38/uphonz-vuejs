@@ -17,6 +17,7 @@
 
 <script>
 import axios from 'axios';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default {
     name: 'SuppliersList',
@@ -35,7 +36,7 @@ export default {
     },
     methods: {
         async placeOrder(supplierId) {
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = useAuthStore().getUser;
             const userId = user?._id;
 
             if (!userId) {

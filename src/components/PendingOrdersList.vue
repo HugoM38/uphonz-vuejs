@@ -26,6 +26,7 @@
 <script lang="ts">
 import axios from 'axios';
 import PendingOrderRow from './PendingOrderRow.vue';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default {
   name: 'PendingOrdersList',
@@ -106,10 +107,9 @@ export default {
     },
   },
   mounted() {
-    const user = localStorage.getItem('user');
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      this.delivererId = parsedUser._id;
+    const user = useAuthStore().getUser;
+    if (user) {;
+      this.delivererId = user._id;
     }
     this.fetchPendingOrders();
   },

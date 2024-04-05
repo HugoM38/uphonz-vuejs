@@ -1,11 +1,12 @@
 import Account from "@/pages/Account.vue";
-import Signup from '@/pages/Signup.vue';
-import Login from '@/pages/Login.vue';
-import ClientHome from '@/pages/ClientHome.vue';
-import SupplierHome from '@/pages/SupplierHome.vue';
-import DeliveryHome from '@/pages/DeliveryHome.vue';
-import DelivererHistory from '@/pages/DelivererHistory.vue';
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import Signup from "@/pages/Signup.vue";
+import Login from "@/pages/Login.vue";
+import ClientHome from "@/pages/ClientHome.vue";
+import SupplierHome from "@/pages/SupplierHome.vue";
+import DeliveryHome from "@/pages/DeliveryHome.vue";
+import DelivererHistory from "@/pages/DelivererHistory.vue";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -16,52 +17,50 @@ const routes: Array<RouteRecordRaw> = [
       const allowedRoles = ['client', 'supplier', 'deliverer'];
       const role = to.params.role;
 
-      // Vérifier si le rôle est autorisé
       if (allowedRoles.includes(<string>role)) {
         next();
       } else {
-        // Rediriger vers une page appropriée si le rôle n'est pas autorisé
-        next({ name: 'Login' }); // Ou toute autre redirection que vous préférez
+        next({ name: 'Login' }); 
       }
     }
   },
   {
-    path: '/client-home',
-    name: 'ClientHome',
+    path: "/client-home",
+    name: "ClientHome",
     component: ClientHome,
-    meta: { requiresAuth: true, role: 'client' },
+    meta: { requiresAuth: true, role: "client" },
   },
   {
-    path: '/supplier-home',
-    name: 'SupplierHome',
+    path: "/supplier-home",
+    name: "SupplierHome",
     component: SupplierHome,
-    meta: { requiresAuth: true, role: 'supplier' },
+    meta: { requiresAuth: true, role: "supplier" },
   },
   {
-    path: '/delivery-home',
-    name: 'DeliveryHome',
+    path: "/delivery-home",
+    name: "DeliveryHome",
     component: DeliveryHome,
-    meta: { requiresAuth: true, role: 'delivery' },
+    meta: { requiresAuth: true, role: "delivery" },
   },
   {
-    path: '/deliverer-history',
-    name: 'DelivererHistory',
+    path: "/deliverer-history",
+    name: "DelivererHistory",
     component: DelivererHistory,
     meta: { requiresAuth: true },
   },
   {
-    path: '/',
-    name: 'Login',
+    path: "/",
+    name: "Login",
     component: Login,
   },
   {
-    path: '/signup',
-    name: 'Signup',
+    path: "/signup",
+    name: "Signup",
     component: Signup,
   },
   {
-    path: '/:catchAll(.*)',
-    redirect: '/',
+    path: "/:catchAll(.*)",
+    redirect: "/",
   },
 ];
 
@@ -71,10 +70,10 @@ const router = createRouter({
 });
 
 router.beforeEach((to, _from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const user = localStorage.getItem("user");
-  const userData = user ? JSON.parse(user) : null;
-  const isAuthenticated = !!userData;
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const userData = useAuthStore().getUser;
+
+  const isAuthenticated = useAuthStore().isUserLoggedIn;
 
 
   if (isAuthenticated) {
@@ -82,7 +81,7 @@ router.beforeEach((to, _from, next) => {
     if (to.path === homePath) {
       return next();
     }
-    if (to.path === '/' || to.path === '/signup') {
+    if (to.path === "/" || to.path === "/signup") {
       return next(homePath);
     }
     if (requiresAuth && to.meta.role && userData.role !== to.meta.role) {
@@ -90,18 +89,23 @@ router.beforeEach((to, _from, next) => {
     }
   } else {
     if (requiresAuth) {
-      return next('/');
+      return next("/");
     }
   }
   return next();
 });
 
 function getHomePathForRole(role: string) {
-  switch(role) {
-    case 'supplier': return '/supplier-home';
-    case 'client': return '/client-home';
-    case 'deliverer': return '/delivery-home';
-    default: return '/';
+  console.log("role :", role);
+  switch (role) {
+    case "supplier":
+      return "/supplier-home";
+    case "client":
+      return "/client-home";
+    case "deliverer":
+      return "/delivery-home";
+    default:
+      return "/";
   }
 }
 

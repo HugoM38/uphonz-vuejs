@@ -81,21 +81,16 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue';
 import axios from 'axios';
-const user: string = localStorage.getItem('user') ?? "";
+import { useAuthStore } from '@/stores/useAuthStore';
+
+
+let user = null;
 let nom = ""
 let prenom = ""
 let email = ""
 let base = ""
 let locomotion = ""
 let localisable = false
-if (user !== ""){
-  nom = JSON.parse(user).firstname
-  prenom = JSON.parse(user).lastname
-  email = JSON.parse(user).email
-  locomotion = JSON.parse(user).typeOfVehicle
-  base = JSON.parse(user).base
-  localisable = JSON.parse(user).localisable
-}
 
 const snackbar = ref({ show: false, message: '', color: 'success' });
 
@@ -145,9 +140,9 @@ export default defineComponent({
         "firstname": this.nom
       }
       if(await requete(endpoint, request)){
-        const newUser = JSON.parse(user)
+        const newUser = user!
         newUser.firstname = this.nom
-        localStorage.setItem('user',JSON.stringify(newUser))
+        useAuthStore().setUser(JSON.stringify(newUser))
       }
     },
     async validerPrenom() {
@@ -156,9 +151,9 @@ export default defineComponent({
         "lastname": this.prenom
       }
       if (await requete(endpoint, request)) {
-        const newUser = JSON.parse(user)
+        const newUser = user!
         newUser.lastname = this.prenom
-        localStorage.setItem('user', JSON.stringify(newUser))
+        useAuthStore().setUser(JSON.stringify(newUser))
       }
     },
     validerMotDePasse() {
@@ -174,9 +169,9 @@ export default defineComponent({
         "base": this.base
       }
       if (await requete(endpoint, request)) {
-        const newUser = JSON.parse(user)
+        const newUser = user!
         newUser.base = this.base
-        localStorage.setItem('user', JSON.stringify(newUser))
+        useAuthStore().setUser(JSON.stringify(newUser))
       }
     },
     async validerLocomotion() {
@@ -185,9 +180,9 @@ export default defineComponent({
         "typeOfVehicle": this.locomotion
       }
       if (await requete(endpoint, request)) {
-        const newUser = JSON.parse(user)
+        const newUser = user!
         newUser.typeOfVehicle = this.locomotion
-        localStorage.setItem('user', JSON.stringify(newUser))
+        useAuthStore().setUser(JSON.stringify(newUser))
       }
     },
     async modifierLocalisation() {
@@ -196,11 +191,22 @@ export default defineComponent({
         "localisable": this.localisable
       }
       if (await requete(endpoint, request)) {
-        const newUser = JSON.parse(user)
+        const newUser = user!
         newUser.localisable = this.localisable
-        localStorage.setItem('user', JSON.stringify(newUser))
+        useAuthStore().setUser(JSON.stringify(newUser))
       }
     }
   },
+  mounted() {
+    user = useAuthStore().getUser;
+    if (user) {
+      nom = user.lastname
+      prenom = user.firstname
+      email = user.email
+      base = user.base
+      locomotion = user.typeOfVehicle
+      localisable = user.localisable
+    }
+  }
 });
 </script>

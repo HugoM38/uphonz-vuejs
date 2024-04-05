@@ -27,6 +27,7 @@
 <script lang="ts">
 import axios from 'axios';
 import OrderHistoryRow from './OrderHistoryRow.vue';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default {
   name: 'OrderHistory',
@@ -106,7 +107,7 @@ export default {
     ,
   },
   mounted() {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = useAuthStore().getUser;
     if (user && user._id) {
       this.fetchOrderHistory(user._id);
     } else {

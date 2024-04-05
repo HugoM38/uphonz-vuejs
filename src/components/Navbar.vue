@@ -6,10 +6,10 @@
 
         <v-spacer></v-spacer>
 
-        <template v-if="isUserLoggedIn()">
-          <v-btn text="true" @click="gotoArgument('Account',role)">Profil</v-btn>
-          <v-btn text="true"  v-if="userRole() === 'deliverer'" @click="goto('DelivererHistory')">Historique</v-btn>
-          <v-btn text="true" @click="logout">Déconnexion</v-btn>
+        <template v-if="useAuthStore().isUserLoggedIn">
+            <v-btn text="true"@click="gotoArgument('Account',role)">Profil</v-btn>
+            <v-btn text="true"  v-if="userRole() === 'deliverer'" @click="goto('DelivererHistory')">Historique</v-btn>
+            <v-btn text="true" @click="logout">Déconnexion</v-btn>
         </template>
     </v-app-bar>
 </template>
@@ -18,12 +18,10 @@
 import router from '@/router/router';
 import { useAuthStore } from '@/stores/useAuthStore';
 
-const { isUserLoggedIn, setUser } = useAuthStore();
-
 let role =''
-if(useAuthStore().isUserLoggedIn()){
-  const user: string = localStorage.getItem('user') ?? ''
-  role = JSON.parse(user).role
+if(useAuthStore().isUserLoggedIn){
+  const user =  useAuthStore().getUser;
+  role = user.role
 }
 
 const goto = (path: string) => {
@@ -35,12 +33,12 @@ const gotoArgument = (path: string, role: string) => {
 };
 
 const logout = () => {
-    setUser(null);
+    useAuthStore().setUser(null);
     router.push("/");
 };
 
 const userRole = () => {
-    return isUserLoggedIn() ? JSON.parse(localStorage.getItem("user") ?? "").role : '';
+    return useAuthStore().isUserLoggedIn ? useAuthStore().getUser.role : '';
 };
 
 </script>

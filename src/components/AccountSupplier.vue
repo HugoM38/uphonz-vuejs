@@ -49,17 +49,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import { defineComponent, ref } from 'vue';
 import axios from 'axios';
-const user: string = localStorage.getItem('user') ?? "";
+import { useAuthStore } from '@/stores/useAuthStore';
+let user = null;
 let nom = ""
 let prenom = ""
 let email = ""
-if (user !== ""){
-  nom = JSON.parse(user).firstname
-  prenom = JSON.parse(user).lastname
-  email = JSON.parse(user).email
-}
+
 const snackbar = ref({ show: false, message: '', color: 'success' });
 
 function showSnackbar(message: string, type: 'success' | 'error') {
@@ -100,14 +97,14 @@ export default defineComponent({
   },
   methods: {
     async validerNom() {
-      const endpoint = 'http://localhost:3000/clients/'+email;
+      const endpoint = 'http://localhost:3000/clients/' + email;
       const request = {
         "firstname": this.nom
       }
-      if(await requete(endpoint, request)){
-        const newUser = JSON.parse(user)
+      if (await requete(endpoint, request)) {
+        const newUser = user!
         newUser.firstname = this.nom
-        localStorage.setItem('user',JSON.stringify(newUser))
+        useAuthStore().setUser(JSON.stringify(newUser));
       }
     },
     async validerPrenom() {
@@ -116,18 +113,26 @@ export default defineComponent({
         "lastname": this.prenom
       }
       if (await requete(endpoint, request)) {
-        const newUser = JSON.parse(user)
+        const newUser = user!
         newUser.lastname = this.prenom
-        localStorage.setItem('user', JSON.stringify(newUser))
+        useAuthStore().setUser(JSON.stringify(newUser))
       }
     },
     validerMotDePasse() {
-      const endpoint = 'http://localhost:3000/suppliers/change_password/'+email;
+      const endpoint = 'http://localhost:3000/suppliers/change_password/' + email;
       const request = {
         "password": this.password
       }
-      requete(endpoint,request)
+      requete(endpoint, request)
     },
   },
+  mounted() {
+    user = useAuthStore().getUser;
+    if (user) {
+      nom = user.lastname
+      prenom = user.firstname
+      email = user.email
+    }
+  }
 });
 </script>
