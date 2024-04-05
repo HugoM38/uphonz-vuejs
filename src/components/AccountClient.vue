@@ -54,10 +54,9 @@ import axios from 'axios';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 let user = null;
-let nom = ""
-let prenom = ""
 let email = ""
-
+const nom = ref<String>("")
+const prenom = ref<String>("")
 const snackbar = ref({ show: false, message: '', color: 'success' });
 
 function showSnackbar(message: string, type: 'success' | 'error') {
@@ -88,34 +87,26 @@ async function requete(endpoint: string, request: any) {
 }
 export default defineComponent({
   // Propriétés du composant
-  data() {
-    return {
-      nom: nom,
-      prenom: prenom,
-      password: '',
-      snackbar: snackbar.value
-    };
-  },
   methods: {
     async validerNom() {
       const endpoint = 'http://localhost:3000/clients/' + email;
       const request = {
-        "firstname": this.nom
+        "lastname": this.nom.value
       }
       if (await requete(endpoint, request)) {
         const newUser = user!
-        newUser.lastname = this.nom
+        newUser.lastname = this.nom.value
         useAuthStore().setUser(JSON.stringify(newUser))
       }
     },
     async validerPrenom() {
       const endpoint = 'http://localhost:3000/clients/' + email;
       const request = {
-        "lastname": this.prenom
+        "firstname": this.prenom.value
       }
       if (await requete(endpoint, request)) {
         const newUser = user!
-        newUser.lastname = this.prenom
+        newUser.lastname = this.prenom.value
         useAuthStore().setUser(JSON.stringify(newUser))
       }
     },
@@ -131,8 +122,8 @@ export default defineComponent({
     const store = useAuthStore();
     user = store.getUser();
     if (user) {
-      nom = user.lastname
-      prenom = user.firstname
+      nom.value = user.lastname
+      prenom.value = user.firstname
       email = user.email
     }
   },

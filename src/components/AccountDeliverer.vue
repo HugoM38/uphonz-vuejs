@@ -1,4 +1,3 @@
-
 <template>
   <v-container>
     <v-row justify="center">
@@ -78,20 +77,17 @@
   </v-container>
 </template>
 
-<script lang="ts">
-import {defineComponent, ref} from 'vue';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores/useAuthStore';
 
-
-let user = null;
-let nom = ""
-let prenom = ""
-let email = ""
-let base = ""
-let locomotion = ""
-let localisable = false
-
+const nom = ref("");
+const prenom = ref("");
+const password = ref("");
+const base = ref("");
+const locomotion = ref("");
+const localisable = ref(false);
 const snackbar = ref({ show: false, message: '', color: 'success' });
 
 function showSnackbar(message: string, type: 'success' | 'error') {
@@ -99,6 +95,7 @@ function showSnackbar(message: string, type: 'success' | 'error') {
   snackbar.value.message = message;
   snackbar.value.color = type === 'error' ? 'error' : 'success';
 }
+
 async function requete(endpoint: string, request: any) {
   try {
     const response = await axios.patch(endpoint, request);
@@ -120,93 +117,84 @@ async function requete(endpoint: string, request: any) {
     }
   }
 }
-export default defineComponent({
 
-  data() {
-    return {
-      nom: nom,
-      prenom: prenom,
-      password: '',
-      base: base,
-      locomotion: locomotion,
-      localisable: localisable,
-      snackbar: snackbar.value
-    };
-  },
-  methods: {
-    async validerNom() {
-      const endpoint = 'http://localhost:3000/deliverers/'+email;
-      const request = {
-        "firstname": this.nom
-      }
-      if(await requete(endpoint, request)){
-        const newUser = user!
-        newUser.firstname = this.nom
-        useAuthStore().setUser(JSON.stringify(newUser))
-      }
-    },
-    async validerPrenom() {
-      const endpoint = 'http://localhost:3000/deliverers/'+email;
-      const request = {
-        "lastname": this.prenom
-      }
-      if (await requete(endpoint, request)) {
-        const newUser = user!
-        newUser.lastname = this.prenom
-        useAuthStore().setUser(JSON.stringify(newUser))
-      }
-    },
-    validerMotDePasse() {
-      const endpoint = 'http://localhost:3000/deliverers/change_password/'+email;
-      const request = {
-        "password": this.password
-      }
-      requete(endpoint,request)
-    },
-    async validerVille() {
-      const endpoint = 'http://localhost:3000/deliverers/'+email;
-      const request = {
-        "base": this.base
-      }
-      if (await requete(endpoint, request)) {
-        const newUser = user!
-        newUser.base = this.base
-        useAuthStore().setUser(JSON.stringify(newUser))
-      }
-    },
-    async validerLocomotion() {
-      const endpoint = 'http://localhost:3000/deliverers/'+email;
-      const request = {
-        "typeOfVehicle": this.locomotion
-      }
-      if (await requete(endpoint, request)) {
-        const newUser = user!
-        newUser.typeOfVehicle = this.locomotion
-        useAuthStore().setUser(JSON.stringify(newUser))
-      }
-    },
-    async modifierLocalisation() {
-      const endpoint = 'http://localhost:3000/deliverers/'+email;
-      const request = {
-        "localisable": this.localisable
-      }
-      if (await requete(endpoint, request)) {
-        const newUser = user!
-        newUser.localisable = this.localisable
-        useAuthStore().setUser(JSON.stringify(newUser))
-      }
-    }
-  },
-  mounted() {
-    user = useAuthStore().getUser;
-    if (user) {
-      nom = user.lastname
-      prenom = user.firstname
-      email = user.email
-      base = user.base
-      locomotion = user.typeOfVehicle
-      localisable = user.localisable
-    }
+async function validerNom() {
+  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const request = {
+    "lastname": nom.value
+  }
+  if(await requete(endpoint, request)){
+    const newUser = useAuthStore().getUser;
+    newUser.firstname = nom.value;
+    useAuthStore().setUser(newUser);
+  }
+}
+
+async function validerPrenom() {
+  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const request = {
+    "firstname": prenom.value
+  }
+  if (await requete(endpoint, request)) {
+    const newUser = useAuthStore().getUser;
+    newUser.lastname = prenom.value;
+    useAuthStore().setUser(newUser);
+  }
+}
+
+async function validerMotDePasse() {
+  const endpoint = 'http://localhost:3000/deliverers/change_password/'+useAuthStore().getUser.email;
+  const request = {
+    "password": password.value
+  }
+  requete(endpoint,request)
+}
+
+async function validerVille() {
+  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const request = {
+    "base": base.value
+  }
+  if (await requete(endpoint, request)) {
+    const newUser = useAuthStore().getUser;
+    newUser.base = base.value;
+    useAuthStore().setUser(newUser);
+  }
+}
+
+async function validerLocomotion() {
+  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const request = {
+    "typeOfVehicle": locomotion.value
+  }
+  if (await requete(endpoint, request)) {
+    const newUser = useAuthStore().getUser;
+    newUser.typeOfVehicle = locomotion.value;
+    useAuthStore().setUser(newUser);
+  }
+}
+
+async function modifierLocalisation() {
+  const endpoint = 'http://localhost:3000/deliverers/'+useAuthStore().getUser.email;
+  const request = {
+    "localisable": localisable.value
+  }
+  if (await requete(endpoint, request)) {
+    const newUser = useAuthStore().getUser;
+    newUser.localisable = localisable.value;
+    useAuthStore().setUser(newUser);
+  }
+}
+
+onMounted(() => {
+  const user = useAuthStore().getUser;
+  if (user) {
+    nom.value = user.lastname;
+    prenom.value = user.firstname;
+    base.value = user.base;
+    locomotion.value = user.typeOfVehicle;
+    localisable.value = user.localisable;
   }
 });
+
 </script>
