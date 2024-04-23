@@ -7,11 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/HugoM38/uphonz-vuejs.git'
-            }
-        }
 
         stage('Build Docker Image') {
             when {
