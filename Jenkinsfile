@@ -18,7 +18,7 @@ pipeline {
         stage('Trigger Production Pipeline') {
             steps {
                 script {
-                    build job: 'uphonz-prod'
+                    build job: 'uphonz-prod/main'
                 }
             }
         }
