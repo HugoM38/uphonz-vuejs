@@ -8,10 +8,11 @@ pipeline {
 
     stages {
 
-        stage('Build Docker Image') {
+        stage('Build and Push Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").tag("latest")
                 }
             }
         }
